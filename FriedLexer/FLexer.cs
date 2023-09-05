@@ -58,13 +58,22 @@
             }
         }
 
+        public void SetText(string newText) 
+        {
+            var charList = newText.ToList();
+            foreach (var logicalToken in DefinedLogicalTokens)
+            {
+                logicalToken.Analizable = charList;
+            }
+            this.Analizable = charList;
+        }
 
         public List<FToken<TokenEnum>> Lex()
         {
             List<FToken<TokenEnum>> tokens = new List<FToken<TokenEnum>>();
             while (Current != EndOfFile)
             {
-                //this is all great!
+                //seems to work great
                 FToken<TokenEnum> token = new FToken<TokenEnum>(BadToken, Position, null, Current.ToString(), "BAD");
 
                 //to optimize we only look as many characters forward as we have (depth)
@@ -100,37 +109,35 @@
                         //depending on how long the token was of cource
                         if (!token.isBadToken)
                         {
-                            Position += token.Text.Length - 1;
+                            Position += token.Text.Length - 1; //probally some flaws here but i guess ill fix later, i heavent run into anything yet
                         }
                         break;
                     }
                     Position++;
                 }
 
-                //match others
+                //match logical tokens
 
-
-                //this is ass
                 if (token.isBadToken)
                 {
                     foreach (var logicalDefinition in DefinedLogicalTokens)
                     {
-                        if (!token.isBadToken)
+                        if (!token.isBadToken) //if we already macthed it we dont need to look further/try to overwrite it
                             break;
 
-                        logicalDefinition.Position = Position;
+                        logicalDefinition.Position = Position; //update the position
                         if (logicalDefinition.IfMatch())
                         {
+                            //returning null will just set it as a null token which means it gets ignored all together
+                            //think of a whitespace token, which can be ignored all together
                             token = logicalDefinition.ParseToken() ?? new FToken<TokenEnum>(BadToken, "NULL");
-                            Position = logicalDefinition.Position;
+                            Position = logicalDefinition.Position; //if it matched we need to update our position
                         }
                     }
                 }
-                {
-                    if (!token.isNull)
-                        tokens.Add(token);
-                    Position++;
-                }
+                if (!token.isNull)
+                    tokens.Add(token);
+                Position++;
             }
 
             //end of the file, we're done here

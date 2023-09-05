@@ -8,7 +8,7 @@ namespace FriedLexerConsole
         static void Main(string[] args)
         {
             string code = """
-            var lol = "Hello World";
+            var testVarible = "Hello World";
 """;
             FLexer<Token> tokenizer = new FLexer<Token>(code, Token.BadToken, Token.EOF);
             tokenizer.DefinedTokens = new Dictionary<string, Token>
