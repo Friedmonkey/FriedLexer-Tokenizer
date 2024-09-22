@@ -11,7 +11,7 @@ namespace FriedLexer
         public TokenEnum Type { get; set; }
         public int Position { get; set; }
         public int EndPosition => Position + Text.Length;
-        public object Value { get; set; }
+        public object? Value { get; set; }
         public string Text { get; set; }
 
         public string SpecialType = "NONE";
@@ -25,7 +25,7 @@ namespace FriedLexer
             Type = type;
             Position = 0;
             Value = null;
-            Text = null;
+            Text = string.Empty;
             SpecialType = specialType;
         }
 
@@ -37,7 +37,7 @@ namespace FriedLexer
             Text = source.Text;
             SpecialType = source.SpecialType;
         }
-        public FToken(TokenEnum type, int pos, object val, string txt, string specialType = "NONE")
+        public FToken(TokenEnum type, int pos, object? val, string txt, string specialType = "NONE")
         {
             Type = type;
             Position = pos;

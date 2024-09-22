@@ -4,13 +4,13 @@
     {
         public char EndOfFile = '\0';
 
-        public FLexer(string TextToAnalize, TokenEnum BadToken, TokenEnum EndOfFileToken, char EndOfFile = '\0') : base(TextToAnalize.ToList(), EndOfFile) 
+        public FLexer(string TextToAnalize, TokenEnum BadToken, TokenEnum EndOfFileToken, char EndOfFile = '\0') : base(TextToAnalize.ToList(), EndOfFile)
         {
             this.EndOfFile = EndOfFile;
             this.BadToken = BadToken;
             this.EndOfFileToken = EndOfFileToken;
         }
-        public FLexer(TokenEnum BadToken, TokenEnum EndOfFileToken, char EndOfFile = '\0') : base(EndOfFile) 
+        public FLexer(TokenEnum BadToken, TokenEnum EndOfFileToken, char EndOfFile = '\0') : base(EndOfFile)
         {
             this.EndOfFile = EndOfFile;
             this.BadToken = BadToken;
@@ -24,7 +24,7 @@
         public TokenEnum EndOfFileToken { get; set; } = default;
 
 
-        public bool AddLogicalToken<logicToken>(string code = null) where logicToken : LogicalToken<TokenEnum>, new()
+        public bool AddLogicalToken<logicToken>(string? code = null) where logicToken : LogicalToken<TokenEnum>, new()
         {
             try
             {
@@ -41,7 +41,7 @@
                 return false;
             }
         }
-        public bool AddLogicalToken<logicToken>(logicToken token, string code = null) where logicToken : LogicalToken<TokenEnum>
+        public bool AddLogicalToken<logicToken>(logicToken token, string? code = null) where logicToken : LogicalToken<TokenEnum>
         {
             try
             {
@@ -58,7 +58,7 @@
             }
         }
 
-        public void SetText(string newText) 
+        public void SetText(string newText)
         {
             var charList = newText.ToList();
             foreach (var logicalToken in DefinedLogicalTokens)
@@ -71,24 +71,29 @@
         public List<FToken<TokenEnum>> Lex()
         {
             List<FToken<TokenEnum>> tokens = new List<FToken<TokenEnum>>();
+            //to optimize we only look as many characters forward as we have (depth)
+            //we dont have to look 5 characters if our longest matchable is only 4 characters
+            int depth = DefinedTokens.Keys.GetLongestLength();
+            //Span<char> startSpan = stackalloc char[depth];
+            string start = string.Empty;
+
             while (Current != EndOfFile)
             {
                 //seems to work great
                 FToken<TokenEnum> token = new FToken<TokenEnum>(BadToken, Position, null, Current.ToString(), "BAD");
-
-                //to optimize we only look as many characters forward as we have (depth)
-                //we dont have to look 5 characters if our longest matchable is only 4 characters
-                int depth = DefinedTokens.Keys.GetLongestLength();
                 int startPos = Position;
                 for (int i = 0; i < depth; i++)
                 {
-                    var start = string.Empty;
+                    start = string.Empty;
 
                     //construct/build the string that we will be looking for
                     for (int j = -i; j <= 0; j++)
                     {
+                        //startSpan[i] = Peek(j);
                         start += $"{Peek(j)}";
                     }
+
+                    //startSpan.Slice(0,i).ToString()
 
                     var matching = DefinedTokens.Where(t => t.Key.StartsWith(start)).ToList();
                     if (matching.Count() > 0)

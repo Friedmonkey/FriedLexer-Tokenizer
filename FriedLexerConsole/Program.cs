@@ -8,7 +8,13 @@ namespace FriedLexerConsole
         static void Main(string[] args)
         {
             string code = """
-            var testVarible = "Hello World";
+            
+            int main()
+            {
+                var testVarible = "Hello World";
+                print(testVarible);
+            }
+            
 """;
             FLexer<Token> tokenizer = new FLexer<Token>(code, Token.BadToken, Token.EOF);
             tokenizer.DefinedTokens = new Dictionary<string, Token>
@@ -18,6 +24,11 @@ namespace FriedLexerConsole
                 {"=",Token.Equals},
                 {"==",Token.EqualsEquals},
                 { "=>",Token.Arrow},
+
+                { "(",Token.lPar},
+                { ")",Token.rPar},
+                { "{",Token.lBrace},
+                { "}",Token.rBrace},
             };
 
 
@@ -54,6 +65,7 @@ namespace FriedLexerConsole
             "var",
             "if",
             "else",
+            "int",
         };
         enum Token
         {
@@ -62,6 +74,11 @@ namespace FriedLexerConsole
             Equals,                     //  =
             EqualsEquals,               //  ==
             Arrow,                      //  =>
+
+            lPar,                       //  (
+            rPar,                       //  )
+            lBrace,                     //  {
+            rBrace,                     //  }
 
             String,                     // "anything here"
 

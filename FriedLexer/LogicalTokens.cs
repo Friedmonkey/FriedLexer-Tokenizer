@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static FriedLexer.LogicalTokens;
 
 namespace FriedLexer
 {
@@ -100,11 +99,11 @@ namespace FriedLexer
         }
         public class IdentifierOrKeywordToken<EToken> : LogicalToken<EToken> where EToken : System.Enum
         {
-            public IdentifierOrKeywordToken(EToken keywordToken, EToken identifierToken, List<string> keywords = null)
+            public IdentifierOrKeywordToken(EToken keywordToken, EToken identifierToken, List<string>? keywords = null)
             {
                 this.keywordToken = keywordToken;
                 this.identifierToken = identifierToken;
-                this.Keywords = keywords;
+                this.Keywords = keywords ?? new List<string>();
             }
             EToken keywordToken = default;
             EToken identifierToken = default;
