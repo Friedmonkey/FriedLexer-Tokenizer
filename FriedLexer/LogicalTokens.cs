@@ -113,7 +113,7 @@ namespace FriedLexer
             {
                 str = string.Empty;
                 startPos = Position;
-                return char.IsLetter(Current);
+                return (char.IsLetter(Current) || Current == '_');
             }
 
             public override FToken<EToken>? ParseToken()
