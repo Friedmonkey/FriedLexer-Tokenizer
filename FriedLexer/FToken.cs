@@ -9,8 +9,10 @@ namespace FriedLexer
     public struct FToken<TokenEnum> where TokenEnum : System.Enum
     {
         public static string CurrentOriginContext = "none";
+        public static string? CurrentInternalMacroContext = null;
         public TokenEnum Type { get; set; }
         public string Origin { get; set; } = CurrentOriginContext;
+        public string? InternalMacroName { get; set; } = CurrentInternalMacroContext;
         public int Position { get; set; }
         public int EndPosition => Position + Text.Length;
         public object? Value { get; set; }
